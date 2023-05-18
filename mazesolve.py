@@ -74,7 +74,7 @@ def draw_path(path, canvas):
                            (pos.y + 1) * 30 - 10, (pos.x + 1) * 30 - 10, fill='blue')
 
 
-def solve_maze():
+def solve_maze(start_x, start_y, dest_x, dest_y):
     maze = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0],
             [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0],
@@ -87,12 +87,13 @@ def solve_maze():
             [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0],
             [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-    destination = Grid_Position(10, 6)
-    starting_position = Grid_Position(11, 10)
+
+    destination = Grid_Position(dest_x, dest_y)
+    starting_position = Grid_Position(start_x, start_y)
     visited_blocks = bfs(maze, destination, starting_position)
 
     if visited_blocks is not None:
-        print("Shortest path steps = ", visited_blocks.cost)
+        print("Shortest path steps =", visited_blocks.cost)
         path = []
         while visited_blocks.parent is not None:
             path.append(visited_blocks.pos)
@@ -106,6 +107,39 @@ def solve_maze():
         # Create GUI
         root = tk.Tk()
         root.title("Maze Solver")
+
+        # Input Fields
+        start_label = tk.Label(root, text="Starting Position:")
+        start_label.pack()
+        start_frame = tk.Frame(root)
+        start_frame.pack()
+        start_x_label = tk.Label(start_frame, text="X:")
+        start_x_label.pack(side=tk.LEFT)
+        start_x_entry = tk.Entry(start_frame)
+        start_x_entry.pack(side=tk.LEFT)
+        start_y_label = tk.Label(start_frame, text="Y:")
+        start_y_label.pack(side=tk.LEFT)
+        start_y_entry = tk.Entry(start_frame)
+        start_y_entry.pack(side=tk.LEFT)
+
+        dest_label = tk.Label(root, text="Destination Position:")
+        dest_label.pack()
+        dest_frame = tk.Frame(root)
+        dest_frame.pack()
+        dest_x_label = tk.Label(dest_frame, text="X:")
+        dest_x_label.pack(side=tk.LEFT)
+        dest_x_entry = tk.Entry(dest_frame)
+        dest_x_entry.pack(side=tk.LEFT)
+        dest_y_label = tk.Label(dest_frame, text="Y:")
+        dest_y_label.pack(side=tk.LEFT)
+        dest_y_entry = tk.Entry(dest_frame)
+        dest_y_entry.pack(side=tk.LEFT)
+
+        # Button
+        solve_button = tk.Button(root, text="Solve", command=lambda: solve_maze(
+            int(start_x_entry.get()), int(start_y_entry.get()), int(dest_x_entry.get()), int(dest_y_entry.get())))
+        solve_button.pack()
+
         canvas = tk.Canvas(root, width=360, height=360)
         canvas.pack()
         create_grid(maze, canvas)
@@ -115,6 +149,10 @@ def solve_maze():
         print("Path does not exist")
 
 
+def main():
+    solve_maze(0, 0, 0, 0)
+
+
 if __name__ == '__main__':
-    print("main start\n")
-    solve_maze()
+    print("Main start\n")
+    main()
