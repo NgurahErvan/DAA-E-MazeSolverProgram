@@ -11,6 +11,50 @@ class Node:
         self.cost = cost
         self.parent = parent
         
+ def bfs(Grid, dest: Grid_Position, start: Grid_Position):
+    adj_cell_x = [-1, 0, 0, 1]
+    adj_cell_y = [0, -1, 1, 0]
+    m, n = (len(Grid), len(Grid))
+    visited_blocks = [[False for i in range(m)] for j in range(n)]
+    visited_blocks[start.x][start.y] = True
+    queue = deque()
+    sol = Node(start, 0)
+    queue.append(sol)
+    cells = 4
+    cost = 0
+    while queue:
+        current_block = queue.popleft()
+        current_pos = current_block.pos
+        if current_pos.x == dest.x and current_pos.y == dest.y:
+            print("Algorithm used = BFS")
+            print("Path found!!")
+            print("Total nodes visited = ", cost)
+            return current_block
+        
+        if current_block not in visited_blocks:
+            visited_blocks[current_pos.x][current_pos.y] = True
+            cost = cost + 1
+        x_pos = current_pos.x
+        y_pos = current_pos.y
+        for i in range(cells):
+            if x_pos == len(Grid) - 1 and adj_cell_x[i] == 1:
+                x_pos = current_pos.x
+                y_pos = current_pos.y + adj_cell_y[i]
+            if y_pos == 0 and adj_cell_y[i] == -1:
+                x_pos = current_pos.x + adj_cell_x[i]
+                y_pos = current_pos.y
+            else:
+                x_pos = current_pos.x + adj_cell_x[i]
+                y_pos = current_pos.y + adj_cell_y[i]
+            if x_pos < 12 and y_pos < 12 and x_pos >= 0 and y_pos >= 0:
+                if Grid[x_pos][y_pos] == 1:
+                    if not visited_blocks[x_pos][y_pos]:
+                        next_cell = Node(Grid_Position(x_pos, y_pos),
+                                       current_block.cost + 1, parent=current_block)
+                        visited_blocks[x_pos][y_pos] = True
+                        queue.append(next_cell)
+    return None
+        
 def main():
     maze = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0],
